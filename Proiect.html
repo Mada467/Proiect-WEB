@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Biblioteca Virtuală</title>
+    <link rel="stylesheet" href="Proiect.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">📚 Biblioteca Virtuală</div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Categorii</a></li>
+          <li><a href="#">Recenzii</a></li>
+          <li><a href="#">Wishlist</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="search-bar">
+        <input type="text" placeholder="Caută o carte sau autor..." />
+      </div>
+    </header>
+
+    <!-- Caruselul de imagini sub header -->
+    <div class="carousel-container">
+      <div class="carousel">
+        <img src="SK1.jpg" alt="Talismanul" />
+        <img src="SK2.jpg" alt="Dark Tower" />
+        <img src="SK3.jpg" alt="Billy Summer" />
+        <img src="SK4.jpg" alt="The dark house" />
+        <img src="SK5.jpg" alt="I like the dark" />
+      </div>
+      <div class="carousel-overlay"></div>
+      <div class="carousel-title">Descoperă lumea magică a cărților</div>
+      <button class="carousel-btn prev">❮</button>
+      <button class="carousel-btn next">❯</button>
+      <div class="carousel-nav">
+        <div class="carousel-dot active" data-index="0"></div>
+        <div class="carousel-dot" data-index="1"></div>
+        <div class="carousel-dot" data-index="2"></div>
+        <div class="carousel-dot" data-index="3"></div>
+        <div class="carousel-dot" data-index="4"></div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <h1>Bine ați venit la Biblioteca Virtuală</h1>
+      <p>
+        Explorați colecția noastră de cărți digitale și descoperiți titluri noi
+        în fiecare zi.
+      </p>
+      <!-- Restul conținutului site-ului -->
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
