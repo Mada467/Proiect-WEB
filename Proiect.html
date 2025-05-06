@@ -6,6 +6,14 @@
     <title>Biblioteca Virtuală</title>
     <link rel="stylesheet" href="Proiect.css" />
   </head>
+  <div id="cart-modal" class="cart-modal hidden">
+    <div class="cart-content">
+      <h2>Coș de cumpărături</h2>
+      <ul id="cart-items"></ul>
+      <button id="close-cart">Închide</button>
+    </div>
+  </div>
+
   <body>
     <header class="site-header">
       <div class="logo">📚 Biblioteca Virtuală</div>
@@ -21,6 +29,9 @@
       <div class="search-bar">
         <input type="text" placeholder="Caută o carte sau autor..." />
       </div>
+      <div class="cart-icon" id="cart-icon">
+        🛒<span id="cart-count">0</span>
+      </div>
     </header>
 
     <!-- Caruselul de imagini sub header -->
@@ -31,6 +42,7 @@
         <img src="SK3.jpg" alt="Billy Summer" />
         <img src="SK4.jpg" alt="The dark house" />
         <img src="SK5.jpg" alt="I like the dark" />
+        <img src="SK6.png" alt="Never Flitch" />
       </div>
       <div class="carousel-overlay"></div>
       <div class="carousel-title">Descoperă lumea magică a cărților</div>
@@ -42,6 +54,7 @@
         <div class="carousel-dot" data-index="2"></div>
         <div class="carousel-dot" data-index="3"></div>
         <div class="carousel-dot" data-index="4"></div>
+        <div class="carousel-dot" data-index="5"></div>
       </div>
     </div>
 
@@ -51,7 +64,6 @@
         Explorați colecția noastră de cărți digitale și descoperiți titluri noi
         în fiecare zi.
       </p>
-      <!-- Restul conținutului site-ului -->
     </div>
 
     <script src="script.js"></script>
