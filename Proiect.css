@@ -541,3 +541,41 @@ img:hover {
 .circular-menu.active .menu-item:nth-child(3) { transition-delay: 0.3s; transform: translate(0px, 60px); } /* GitHub */
 .circular-menu.active .menu-item:nth-child(4) { transition-delay: 0.4s; transform: translate(-60px, 0px); } /* YouTube */
 
+
+/* Stiluri pentru dropdown-ul Categorii */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%; /* Centrul stâng al meniului este aliniat cu centrul stâng al părinte */
+    transform: translateX(-50%) translateY(-5px); /* Mutăm meniul cu 50% din lățimea sa spre stânga și puțin în sus */
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    list-style: none;
+    z-index: 100;
+    display: none;
+    opacity: 0;
+    min-width: 180px;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0); /* Eliminăm deplasarea pe Y la hover */
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 12px 20px; /* Mărim padding-ul pentru un aspect mai aerisit */
+    text-decoration: none;
+    color: white; /* Text alb */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.dropdown-menu li a:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Un albastru foarte deschis la hover */
+}
+
