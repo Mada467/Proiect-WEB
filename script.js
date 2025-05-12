@@ -1,137 +1,285 @@
 /**
- * Script pentru funcționalitatea caruselului de imagini
- * 
- * Acest script se ocupă de:
- * 1. Inițializarea caruselului
- * 2. Navigarea între imaginile caruselului folosind butoanele și punctele
- * 3. Rotirea automată a imaginilor la fiecare 5 secunde
+ * Script pentru funcționalitățile site-ului Biblioteca Virtuală
+ * Funcționalități implementate:
+ * 1. Sistem de autentificare utilizator
+ * 2. Coș de cumpărături
  */
 
 // Așteptăm ca tot documentul să se încarce înainte de a executa codul
 document.addEventListener('DOMContentLoaded', function() {
-  // Selectăm elementele caruselului
-  const carousel = document.querySelector('.carousel');
-  const dots = document.querySelectorAll('.carousel-dot');
-  const prevBtn = document.querySelector('.carousel-btn.prev');
-  const nextBtn = document.querySelector('.carousel-btn.next');
-  
-  // Numărăm câte imagini avem în carusel
-  const imageCount = document.querySelectorAll('.carousel img').length;
-  
-  // Ținem evidența imaginii curente afișate
-  let currentIndex = 0;
-  
-  // Stabilim lățimea caruselului în funcție de câte imagini avem
-  // De exemplu, dacă avem 4 imagini, lățimea totală va fi 400%
-  carousel.style.width = `${imageCount * 100}%`;
-  
-  // Setăm lățimea fiecărei imagini pentru a ocupa o parte egală din carusel
-  document.querySelectorAll('.carousel img').forEach(img => {
-      img.style.width = `${100 / imageCount}%`;
-  });
-  
-  /**
-   * Funcție pentru navigarea la o anumită imagine
-   * @param {number} index - Indexul imaginii la care vrem să navigăm
-   */
-  function goToSlide(index) {
-      // Verificăm să nu depășim limitele
-      if (index < 0) {
-          // Dacă am ajuns la prima imagine și vrem să mergem înapoi,
-          // mergem la ultima imagine
-          index = imageCount - 1;
-      } else if (index >= imageCount) {
-          // Dacă am ajuns la ultima imagine și vrem să continuăm,
-          // revenim la prima imagine
-          index = 0;
-      }
-      
-      // Mutăm caruselul la poziția corectă prin transformare CSS
-      carousel.style.transform = `translateX(-${index * (100 / imageCount)}%)`;
-      
-      // Actualizăm indexul curent
-      currentIndex = index;
-      
-      // Actualizăm care punct de navigare este activ
-      dots.forEach((dot, i) => {
-          if (i === currentIndex) {
-              dot.classList.add('active');
-          } else {
-              dot.classList.remove('active');
-          }
-      });
+  // Inițializăm funcționalitățile
+  initLoginSystem();
+  initShoppingCart();
+});
+
+/**
+ * Funcționalitatea sistemului de autentificare
+ */
+function initLoginSystem() {
+  const loginButton = document.getElementById('login-button');
+  const loginModal = document.getElementById('login-modal');
+  const closeLogin = document.getElementById('close-login');
+  const tabs = document.querySelectorAll('.tab');
+  const tabPanes = document.querySelectorAll('.tab-pane');
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const togglePasswords = document.querySelectorAll('.toggle-password');
+
+  let isLoggedIn = false;
+  let currentUser = null;
+
+  function openLoginModal() {
+    loginModal.classList.remove('hidden');
   }
-  
-  // Configurăm evenimentele pentru butoanele de navigare
-  
-  // Butonul pentru imaginea anterioară
-  prevBtn.addEventListener('click', () => {
-      goToSlide(currentIndex - 1);
+
+  function closeLoginModal() {
+    loginModal.classList.add('hidden');
+  }
+
+  loginButton.addEventListener('click', () => {
+    if (isLoggedIn) {
+      showUserDropdown();
+    } else {
+      openLoginModal();
+    }
   });
-  
-  // Butonul pentru imaginea următoare
-  nextBtn.addEventListener('click', () => {
-      goToSlide(currentIndex + 1);
+
+  closeLogin.addEventListener('click', closeLoginModal);
+
+  loginModal.addEventListener('click', (e) => {
+    if (e.target === loginModal) {
+      closeLoginModal();
+    }
   });
-  
-  // Configurăm evenimentele pentru punctele de navigare
-  dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-          goToSlide(index);
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const tabId = tab.getAttribute('data-tab');
+      tabPanes.forEach(pane => {
+        pane.classList.toggle('active', pane.id === tabId + '-pane');
       });
+    });
   });
-  
-  // Configurăm rotirea automată a caruselului la fiecare 8 secunde
-  const autoRotate = setInterval(() => {
-      goToSlide(currentIndex + 1);
-  }, 8000);
-  
-  // Oprim rotirea automată când utilizatorul interacționează cu caruselul
-  carousel.addEventListener('mouseenter', () => {
-      clearInterval(autoRotate);
-  });
-  
-  // Reluăm rotirea automată când utilizatorul nu mai interacționează cu caruselul
-  carousel.addEventListener('mouseleave', () => {
-      setInterval(() => {
-          goToSlide(currentIndex + 1);
-      }, 8000);
-  });
-  
-  // Adăugăm suport pentru navigare cu tastatura
-  document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') {
-          goToSlide(currentIndex - 1);
-      } else if (e.key === 'ArrowRight') {
-          goToSlide(currentIndex + 1);
-      }
-  });
-});
-let cart = [];
 
-document.querySelectorAll('.add-to-cart').forEach(button => {
-  button.addEventListener('click', () => {
-    const title = button.dataset.title;
-    cart.push(title);
-    updateCartUI();
+  togglePasswords.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const passwordInput = toggle.previousElementSibling;
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      toggle.classList.toggle('fa-eye', !isPassword);
+      toggle.classList.toggle('fa-eye-slash', isPassword);
+    });
   });
-});
 
-function updateCartUI() {
-  document.getElementById('cart-count').textContent = cart.length;
-  const list = document.getElementById('cart-items');
-  list.innerHTML = '';
-  cart.forEach((item, index) => {
-    const li = document.createElement('li');
-    li.textContent = item;
-    list.appendChild(li);
+  function handleLogin(email, password) {
+    if (email && password) {
+      const mockUser = { name: 'Utilizator Demo', email: email };
+      localStorage.setItem('currentUser', JSON.stringify(mockUser));
+      isLoggedIn = true;
+      currentUser = mockUser;
+      updateUserInterface();
+      closeLoginModal();
+      return true;
+    }
+    return false;
+  }
+
+  function handleRegister(name, email, password, confirmPassword) {
+    if (!name || !email || !password || password !== confirmPassword) {
+      alert('Vă rugăm să completați toate câmpurile și să vă asigurați că parolele coincid.');
+      return false;
+    }
+
+    const newUser = { name: name, email: email };
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    isLoggedIn = true;
+    currentUser = newUser;
+    updateUserInterface();
+    closeLoginModal();
+    return true;
+  }
+
+  function updateUserInterface() {
+    if (isLoggedIn && currentUser) {
+      loginButton.innerHTML = `<i class="fas fa-user"></i> ${currentUser.name}`;
+    } else {
+      loginButton.innerHTML = '<i class="fas fa-user"></i> Contul meu';
+    }
+  }
+
+  function showUserDropdown() {
+    if (confirm('Doriți să vă deconectați?')) {
+      localStorage.removeItem('currentUser');
+      isLoggedIn = false;
+      currentUser = null;
+      updateUserInterface();
+    }
+  }
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    handleLogin(email, password);
   });
+
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('register-name').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const confirmPassword = document.getElementById('register-confirm-password').value;
+    handleRegister(name, email, password, confirmPassword);
+  });
+
+  const savedUser = localStorage.getItem('currentUser');
+  if (savedUser) {
+    currentUser = JSON.parse(savedUser);
+    isLoggedIn = true;
+    updateUserInterface();
+  }
 }
 
-document.getElementById('cart-icon').addEventListener('click', () => {
-  document.getElementById('cart-modal').classList.remove('hidden');
-});
+/**
+ * Funcționalitatea coșului de cumpărături
+ */
+function initShoppingCart() {
+  const cartIcon = document.getElementById('cart-icon');
+  const cartModal = document.getElementById('cart-modal');
+  const closeCart = document.getElementById('close-cart');
+  const cartItems = document.getElementById('cart-items');
+  const cartCount = document.getElementById('cart-count');
+  const cartTotalPrice = document.getElementById('cart-total-price');
+  const cartEmpty = document.getElementById('cart-empty');
+  const cartItemsContainer = document.getElementById('cart-items-container');
+  const addToCartButtons = document.querySelectorAll('.add-to-cart');
 
-document.getElementById('close-cart').addEventListener('click', () => {
-  document.getElementById('cart-modal').classList.add('hidden');
-});
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+  function updateCartUI() {
+    cartCount.textContent = cart.length;
+    cartItems.innerHTML = '';
+
+    if (cart.length === 0) {
+      cartEmpty.classList.remove('hidden');
+      cartItemsContainer.classList.add('hidden');
+    } else {
+      cartEmpty.classList.add('hidden');
+      cartItemsContainer.classList.remove('hidden');
+
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'cart-item';
+        const itemTotal = parseFloat(item.price) * item.quantity;
+        total += itemTotal;
+
+        li.innerHTML = `
+          <div class="cart-item-info">
+            <div class="cart-item-title">${item.title}</div>
+            <div class="cart-item-price">${parseFloat(item.price).toFixed(2)} RON</div>
+          </div>
+          <div class="cart-item-quantity">
+            <button class="quantity-btn decrease" data-index="${index}">-</button>
+            <span>${item.quantity}</span>
+            <button class="quantity-btn increase" data-index="${index}">+</button>
+          </div>
+          <div class="remove-item" data-index="${index}">×</div>
+        `;
+        cartItems.appendChild(li);
+      });
+
+      cartTotalPrice.textContent = total.toFixed(2) + ' RON';
+
+      document.querySelectorAll('.quantity-btn.decrease').forEach(btn => {
+        btn.addEventListener('click', () => {
+          decreaseQuantity(parseInt(btn.getAttribute('data-index')));
+        });
+      });
+
+      document.querySelectorAll('.quantity-btn.increase').forEach(btn => {
+        btn.addEventListener('click', () => {
+          increaseQuantity(parseInt(btn.getAttribute('data-index')));
+        });
+      });
+
+      document.querySelectorAll('.remove-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          removeItem(parseInt(btn.getAttribute('data-index')));
+        });
+      });
+    }
+  }
+
+  function addToCart(title, price) {
+    const existingItem = cart.find(item => item.title === title);
+    if (existingItem) {
+      existingItem.quantity++;
+    } else {
+      cart.push({ title: title, price: price, quantity: 1 });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartUI();
+  }
+
+  function increaseQuantity(index) {
+    cart[index].quantity++;
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartUI();
+  }
+
+  function decreaseQuantity(index) {
+    if (cart[index].quantity > 1) {
+      cart[index].quantity--;
+    } else {
+      removeItem(index);
+      return;
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartUI();
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartUI();
+  }
+
+  cartIcon.addEventListener('click', () => {
+    cartModal.classList.remove('hidden');
+    updateCartUI();
+  });
+
+  closeCart.addEventListener('click', () => {
+    cartModal.classList.add('hidden');
+  });
+
+  cartModal.addEventListener('click', (e) => {
+    if (e.target === cartModal) {
+      cartModal.classList.add('hidden');
+    }
+  });
+
+  addToCartButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const title = button.getAttribute('data-title');
+      const price = button.getAttribute('data-price');
+      addToCart(title, price);
+
+      const originalText = button.textContent;
+      button.textContent = 'Adăugat!';
+      button.classList.add('added');
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove('added');
+      }, 1500);
+    });
+  });
+
+  updateCartUI();
+}

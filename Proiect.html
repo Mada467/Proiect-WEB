@@ -5,65 +5,284 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Biblioteca Virtuală</title>
     <link rel="stylesheet" href="Proiect.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
   </head>
-  <div id="cart-modal" class="cart-modal hidden">
-    <div class="cart-content">
-      <h2>Coș de cumpărături</h2>
-      <ul id="cart-items"></ul>
-      <button id="close-cart">Închide</button>
-    </div>
-  </div>
 
   <body>
     <header class="site-header">
       <div class="logo">📚 Biblioteca Virtuală</div>
       <nav class="site-nav">
         <ul>
-          <li><a href="#">Home</a></li>
+          <li><a href="#" class="active">Home</a></li>
           <li><a href="#">Categorii</a></li>
-          <li><a href="#">Recenzii</a></li>
-          <li><a href="#">Wishlist</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
       </nav>
       <div class="search-bar">
         <input type="text" placeholder="Caută o carte sau autor..." />
+        <button class="search-button"><i class="fas fa-search"></i></button>
       </div>
-      <div class="cart-icon" id="cart-icon">
-        🛒<span id="cart-count">0</span>
+      <div class="user-actions">
+        <div class="login-button" id="login-button">
+          <i class="fas fa-user"></i> Contul meu
+        </div>
+        <div class="cart-icon" id="cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cart-count">0</span>
+        </div>
       </div>
     </header>
 
-    <!-- Caruselul de imagini sub header -->
-    <div class="carousel-container">
-      <div class="carousel">
-        <img src="SK1.jpg" alt="Talismanul" />
-        <img src="SK2.jpg" alt="Dark Tower" />
-        <img src="SK3.jpg" alt="Billy Summer" />
-        <img src="SK4.jpg" alt="The dark house" />
-        <img src="SK5.jpg" alt="I like the dark" />
-        <img src="SK6.png" alt="Never Flitch" />
-      </div>
-      <div class="carousel-overlay"></div>
-      <div class="carousel-title">Descoperă lumea magică a cărților</div>
-      <button class="carousel-btn prev">❮</button>
-      <button class="carousel-btn next">❯</button>
-      <div class="carousel-nav">
-        <div class="carousel-dot active" data-index="0"></div>
-        <div class="carousel-dot" data-index="1"></div>
-        <div class="carousel-dot" data-index="2"></div>
-        <div class="carousel-dot" data-index="3"></div>
-        <div class="carousel-dot" data-index="4"></div>
-        <div class="carousel-dot" data-index="5"></div>
+    <!-- Modal de autentificare -->
+    <div id="login-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-button" id="close-login">&times;</span>
+        <div class="login-container">
+          <div class="tab-header">
+            <div class="tab active" data-tab="login">Autentificare</div>
+            <div class="tab" data-tab="register">Înregistrare</div>
+          </div>
+
+          <div class="tab-content">
+            <!-- Formular de autentificare -->
+            <div class="tab-pane active" id="login-pane">
+              <h2>Intră în cont</h2>
+              <form id="login-form">
+                <div class="form-group">
+                  <label for="login-email">Email</label>
+                  <input type="email" id="login-email" required />
+                </div>
+                <div class="form-group">
+                  <label for="login-password">Parolă</label>
+                  <div class="password-container">
+                    <input type="password" id="login-password" required />
+                    <i class="fas fa-eye toggle-password"></i>
+                  </div>
+                </div>
+                <div class="form-group remember-forgot">
+                  <div>
+                    <input type="checkbox" id="remember-me" />
+                    <label for="remember-me">Ține-mă minte</label>
+                  </div>
+                  <a href="#" class="forgot-password">Am uitat parola</a>
+                </div>
+                <button type="submit" class="btn-primary">Autentificare</button>
+              </form>
+            </div>
+
+            <!-- Formular de înregistrare -->
+            <div class="tab-pane" id="register-pane">
+              <h2>Creează cont nou</h2>
+              <form id="register-form">
+                <div class="form-group">
+                  <label for="register-name">Nume complet</label>
+                  <input type="text" id="register-name" required />
+                </div>
+                <div class="form-group">
+                  <label for="register-email">Email</label>
+                  <input type="email" id="register-email" required />
+                </div>
+                <div class="form-group">
+                  <label for="register-password">Parolă</label>
+                  <div class="password-container">
+                    <input type="password" id="register-password" required />
+                    <i class="fas fa-eye toggle-password"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="register-confirm-password">Confirmă parola</label>
+                  <div class="password-container">
+                    <input
+                      type="password"
+                      id="register-confirm-password"
+                      required
+                    />
+                    <i class="fas fa-eye toggle-password"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <input type="checkbox" id="terms" required />
+                  <label for="terms"
+                    >Sunt de acord cu
+                    <a href="#">Termenii și condițiile</a></label
+                  >
+                </div>
+                <button type="submit" class="btn-primary">Înregistrare</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Modal pentru coșul de cumpărături -->
+    <div id="cart-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-button" id="close-cart">&times;</span>
+        <h2>Coșul meu de cumpărături</h2>
+        <div id="cart-empty" class="hidden">
+          <p>Coșul tău este gol.</p>
+          <button class="btn-primary">Descoperă cărți</button>
+        </div>
+        <div id="cart-items-container">
+          <ul id="cart-items"></ul>
+          <div class="cart-total">
+            <span>Total:</span>
+            <span id="cart-total-price">0.00 RON</span>
+          </div>
+          <button class="btn-primary">Finalizează comanda</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔁 Carusel cu imagini și animație doar din CSS -->
+    <section class="carusel-sectiune">
+      <div class="carousel-css-only">
+        <div class="slide"><img src="SK1.jpg" alt="Talismanul" /></div>
+        <div class="slide"><img src="SK2.jpg" alt="Dark Tower" /></div>
+        <div class="slide"><img src="SK3.jpg" alt="Billy Summers" /></div>
+        <div class="slide"><img src="SK4.jpg" alt="Casa Întunecată" /></div>
+        <div class="slide">
+          <img src="SK5.jpg" alt="Îmi place întunericul" />
+        </div>
+      </div>
+    </section>
 
     <div class="main-content">
       <h1>Bine ați venit la Biblioteca Virtuală</h1>
       <p>
         Explorați colecția noastră de cărți digitale și descoperiți titluri noi
-        în fiecare zi.
+        în fiecare zi. Bucurați-vă de cele mai populare cărți ale autorilor
+        preferați.
       </p>
+
+      <div class="content-sections">
+        <div class="section">
+          <h2>Noutăți</h2>
+          <p>Cele mai recente cărți adăugate în biblioteca noastră.</p>
+          <ul class="book-list">
+            <li>
+              <div class="book-card">
+                <img src="Never Flitch.png" alt="Carte nouă" />
+                <div class="book-info">
+                  <h3>Never Flitch</h3>
+                  <p class="author">Stephen King</p>
+                  <p class="price">59.99 RON</p>
+                  <button
+                    class="btn-secondary add-to-cart"
+                    data-title="Never Flitch"
+                    data-price="59.99"
+                  >
+                    Adaugă în coș
+                  </button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="book-card">
+                <img src="Cujo.png" alt="Carte nouă" />
+                <div class="book-info">
+                  <h3>Cujo</h3>
+                  <p class="author">Stephen King</p>
+                  <p class="price">39.99 RON</p>
+                  <button
+                    class="btn-secondary add-to-cart"
+                    data-title="Cujo"
+                    data-price="39.99"
+                  >
+                    Adaugă în coș
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>Bestsellers</h2>
+          <p>Cărțile preferate ale cititorilor noștri în această lună.</p>
+          <ul class="book-list">
+            <li>
+              <div class="book-card">
+                <img src="Set Turnul intunecat .png" alt="Bestseller" />
+                <div class="book-info">
+                  <h3>Turnul intunecat</h3>
+                  <p class="author">Stephen King</p>
+                  <p class="price">799.00 RON</p>
+                  <button
+                    class="btn-secondary add-to-cart"
+                    data-title="Turnul intunecat"
+                    data-price="799.00"
+                  >
+                    Adaugă în coș
+                  </button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="book-card">
+                <img src="Universul Dunei.png" alt="Bestseller" />
+                <div class="book-info">
+                  <h3>Universul Dunei</h3>
+                  <p class="author">Frank Herbert</p>
+                  <p class="price">1299.99 RON</p>
+                  <button
+                    class="btn-secondary add-to-cart"
+                    data-title="Universul Dunei"
+                    data-price="1299.99"
+                  >
+                    Adaugă în coș
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h2>Recomandări</h2>
+          <p>Selecții personalizate bazate pe preferințele tale.</p>
+          <ul class="book-list">
+            <li>
+              <div class="book-card">
+                <img src="Urzeala Tronurilor.png" alt="Recomandare" />
+                <div class="book-info">
+                  <h3>Urzeala Tronurilor</h3>
+                  <p class="author">George R.Martin</p>
+                  <p class="price">249.99 RON</p>
+                  <button
+                    class="btn-secondary add-to-cart"
+                    data-title="Urzeala Tronurilor"
+                    data-price="249.99"
+                  >
+                    Adaugă în coș
+                  </button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="book-card">
+                <img src="The Witcher.png" alt="Recomandare" />
+                <div class="book-info">
+                  <h3>The Witcher</h3>
+                  <p class="author">Andrzej Sapkowski</p>
+                  <p class="price">169.99 RON</p>
+                  <button
+                    class="btn-secondary add-to-cart"
+                    data-title="The Witcher"
+                    data-price="169.99"
+                  >
+                    Adaugă în coș
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <script src="script.js"></script>
