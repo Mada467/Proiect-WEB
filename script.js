@@ -283,3 +283,46 @@ function initShoppingCart() {
 
   updateCartUI();
 }
+/**
+ * Funcționalitatea meniului circular "Contact" (apare la hover)
+ */
+function initContactMenu() {
+    const contactButton = document.querySelector('.contact-button');
+    const circularMenu = document.querySelector('.circular-menu');
+    let isMouseOverButton = false;
+    let isMouseOverMenu = false;
+    let timeoutId;
+    const delay = 200; // Timp de întârziere în milisecunde pentru a evita apariții/dispariții accidentale
+
+    contactButton.addEventListener('mouseenter', () => {
+        isMouseOverButton = true;
+        clearTimeout(timeoutId);
+        circularMenu.classList.add('active');
+    });
+
+    contactButton.addEventListener('mouseleave', () => {
+        isMouseOverButton = false;
+        timeoutId = setTimeout(() => {
+            if (!isMouseOverMenu) {
+                circularMenu.classList.remove('active');
+            }
+        }, delay);
+    });
+
+    circularMenu.addEventListener('mouseenter', () => {
+        isMouseOverMenu = true;
+        clearTimeout(timeoutId);
+    });
+
+    circularMenu.addEventListener('mouseleave', () => {
+        isMouseOverMenu = false;
+        timeoutId = setTimeout(() => {
+            if (!isMouseOverButton) {
+                circularMenu.classList.remove('active');
+            }
+        }, delay);
+    });
+}
+
+// Inițializează funcționalitatea meniului circular
+initContactMenu();
